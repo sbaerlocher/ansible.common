@@ -10,7 +10,10 @@
     - "vars/defaults.yml"
 
 - name: Packages | Install default packages
-  package:  name="{{ item }}" state=present update_cache=yes
+  package:
+    name: "{{ item }}" 
+    state: present 
+    update_cache: yes
   with_items: 
     - "{{ package }}"
 
@@ -23,11 +26,12 @@
 #    - "hostname/defaults.yml"
 
 - name: Centos | SELinux Disable
-  selinux: state=disabled
+  selinux: 
+    state: disabled
   when: ansible_distribution == 'CentOS'
 
 - name: Ubuntu | Unattended package installation
-  shell: export DEBIAN_FRONTEND=noninteractive
+  shell: "export DEBIAN_FRONTEND=noninteractive"
   changed_when: false
   when: ansible_distribution == 'Ubuntu'
 
@@ -39,23 +43,35 @@
   when: users is defined
 
 - name: Certificate | Copy default Certificate  (pt. 1)
-  git: repo="https://{{ git.user }}:{{ git.password }}@gogs.sbaerlo.ch/sbaerlo.ch/certificate.sbaerlo.ch.git" dest=/etc/ssl/sbaerlo.ch version=nginx update=no
+  git: 
+    repo: "https://{{ git.user }}:{{ git.password }}@gogs.sbaerlo.ch/sbaerlo.ch/certificate.sbaerlo.ch.git" 
+    dest: /etc/ssl/sbaerlo.ch 
+    version: nginx 
+    update: no
   when: ansible_system == 'Linux'
 
 - name: Certificate | Change premisson  (pt. 2)
-  file: path="/etc/ssl/" owner=root group=root mode="0644"
+  file: 
+    path: "/etc/ssl/" 
+    owner: root 
+    group: root 
+    mode: "0644"
   when: ansible_system == 'Linux'
 
 - name: VM Hyper-V | Cusom Conmfig (pt. 1)
-  command: sed -i -r "s/(^GRUB_CMDLINE_LINUX=.*quiet)\"/\1 video=hyperv_fb:1024x768\"/g" /etc/default/grub
+  command: 'sed -i -r "s/(^GRUB_CMDLINE_LINUX=.*quiet)\"/\1 video=hyperv_fb:1024x768\"/g" /etc/default/grub'
   when: (ansible_system == 'Linux') and (ansible_virtualization_type == 'Hyper-V')
 
 - name: VM Hyper-V | Cusom Conmfig (pt. 1.1)
-  command:  cp -a /boot/grub2/grub.cfg{,.orig} && grub2-mkconfig -o /boot/grub2/grub.cfg
+  command: "cp -a /boot/grub2/grub.cfg{,.orig} && grub2-mkconfig -o /boot/grub2/grub.cfg"
   when: (ansible_system == 'Linux') and (ansible_virtualization_type == 'Hyper-V')
 
 - name: Cron | Setting MAILTO
-  replace: dest=/etc/crontab regexp='(^MAILTO=).*$' replace='\1hostmaster@sbaerlo.ch' backup=yes
+  replace: 
+    dest: /etc/crontab 
+    regexp: (^MAILTO=).*$ 
+    replace: \1hostmaster@sbaerlo.ch
+    backup: yes
   when: ansible_system == 'Linux'
 
 - name: Update | Include
@@ -79,8 +95,6 @@
     - vimrc
     - netrc
   when: ansible_system == 'Linux'
-  tags:
-    - tt
 
 - name: Default | User Folders
   file:
