@@ -67,8 +67,8 @@
     - "update/defaults.yml"
 
 - name: Default | User Setting
-  copy:
-    src: "{{ item }}"
+  template:
+    src: "{{ item }}.j2"
     dest: "/root/.{{item }}"
     owner: root
     group: root
@@ -77,4 +77,18 @@
     - bashrc
     - screenrc
     - vimrc
+    - netrc
+  when: ansible_system == 'Linux'
+  tags:
+    - tt
+
+- name: Default | User Folders
+  file:
+    path: /root/{{ item }}
+    state: directory
+  with_items:
+    - scripts
+    - dist
+    - build
+    - trash
   when: ansible_system == 'Linux'

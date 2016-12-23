@@ -2,3 +2,5 @@
 # defaults file for sbaerlocher.common
 
 users: []
+
+netrcs: []
