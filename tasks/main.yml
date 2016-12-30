@@ -35,16 +35,9 @@
   changed_when: false
   when: ansible_distribution == 'Ubuntu'
 
-- name: Users | Create default User (pt. 1)
-  user: 
-    name: "{{ item.name }}"
-    group: root
-  with_items: "{{ users }}"
-  when: users is defined
-
 - name: Certificate | Copy default Certificate  (pt. 1)
   git: 
-    repo: "https://{{ git.user }}:{{ git.password }}@gogs.sbaerlo.ch/sbaerlo.ch/certificate.sbaerlo.ch.git" 
+    repo: "https://{{ gogs.token }}@gogs.sbaerlo.ch/sbaerlo.ch/certificate.sbaerlo.ch.git" 
     dest: /etc/ssl/sbaerlo.ch 
     version: nginx 
     update: no
@@ -82,27 +75,64 @@
     - "update/{{ ansible_os_family }}.yml"
     - "update/defaults.yml"
 
-- name: Default | User Setting
-  template:
-    src: "{{ item }}.j2"
-    dest: "/root/.{{item }}"
-    owner: root
-    group: root
-    mode: "0644"
-  with_items:
-    - bashrc
-    - screenrc
-    - vimrc
-    - netrc
+- block:
+  - name: root | User Folders (pt. 1)
+    file:
+      path: /root/{{ item }}
+      state: directory
+    with_items:
+      - scripts
+      - dist
+      - build
+      - trash
+
+  - name: root | User Setting (pt. 2)
+    template:
+      src: "{{ item }}.j2"
+      dest: "/root/.{{item }}"
+      owner: root
+      group: root
+      mode: "0644"
+    with_items:
+      - bashrc
+      - screenrc
+      - vimrc
+      - netrc
+
+  - name: root | Copy default scripts (pt. 3)
+    git: 
+      repo: "https://{{ github.token }}@github.com/sbaerlocher/scripts.git" 
+      dest: /root/scripts 
+      version: linux 
+      update: yes
+      force: yes
   when: ansible_system == 'Linux'
 
-- name: Default | User Folders
-  file:
-    path: /root/{{ item }}
-    state: directory
-  with_items:
-    - scripts
-    - dist
-    - build
-    - trash
-  when: ansible_system == 'Linux'
+- block:
+  - name: Users | Create default User (pt. 1)
+    user: 
+      name: "{{ item }}"
+      group: root
+    with_items: "{{ users }}"
+
+  - name: Users | User Setting (pt. 2)
+    template:
+      src: "{{ item.1 }}.j2"
+      dest: "/home/{{ item.0 }}/.{{ item.1 }}"
+      owner: "{{ item.0 }}"
+      group: "root"
+      mode: "0644"
+    with_nested:
+      - "{{ users }}"
+      - [ 'bashrc', 'screenrc', 'vimrc', 'netrc' ]
+
+  - name: Users | Copy default scripts (pt. 3)
+    git: 
+      repo: "https://{{ github.token }}@github.com/sbaerlocher/scripts.git" 
+      dest: /{{ item }}/scripts 
+      version: linux 
+      update: yes
+      force: yes
+    with_items: "{{ users }}"
+  when: ansible_system == 'Linux' and users is defined
+
