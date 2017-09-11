@@ -3,29 +3,9 @@
 
 package: 
   - git
-# - acpid 
-# - apg 
-# - bzip2 
-# - bind-utils 
-# - bonnie++ 
   - nano 
-# - nmap 
-# - nload 
-# - net-tools
-# - nfs-utils 
-# - psmisc 
-# - python-devel 
-# - rsync 
-# - tcpdump 
-# - tcpdump 
-# - telnet 
-# - traceroute 
-# - tree 
-# - unhide 
-# - wget 
-# - whois 
-# - readline-devel
-# - openssl-devel 
-# - bash-completion
+  - wget 
   - libselinux-python
-#  - MySQL-python
+  - MySQL-python
+  - expect
+  - yum-utils

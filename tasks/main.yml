@@ -101,7 +101,7 @@
 
   - name: root | Copy default scripts (pt. 3)
     git: 
-      repo: "https://{{ github.token }}@github.com/sbaerlocher/scripts.git" 
+      repo: "https://{{ github.token }}@github.com/sbaerlocher/scripts.linux.git" 
       dest: /root/scripts 
       version: linux 
       update: yes

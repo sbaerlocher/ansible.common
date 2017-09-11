@@ -6,6 +6,8 @@ Standards for the Linux and Windows servers
 
 ## Requirements
 
+None
+
 ## Role Variables
 
 | Variable             | Default     | Comments (type)                                   |
@@ -15,12 +17,14 @@ Standards for the Linux and Windows servers
 
 ## Dependencies
 
+None
+
 ## Example Playbook
 
 ```yml
 - hosts: all
   roles:
-     - sbaerlocher.
+     - sbaerlocher.common
 ```
 
 ## Changelog
@@ -39,4 +43,4 @@ This project is under the MIT License. See the [LICENSE](https://sbaerlo.ch/lice
 
 ## Copyright
 
-(c) 2016, Simon Bärlocher
+(c) 2017, Simon Bärlocher

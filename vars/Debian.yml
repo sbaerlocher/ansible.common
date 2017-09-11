@@ -3,29 +3,6 @@
 
 package:
   - git
-# - acpid 
-# - alien 
-# - apg 
-# - apticron 
-# - build-essential 
-# - curl 
-# - debian-keyring 
-# - dnsutils 
-# - memstat 
   - nano 
-# - netcat 
-# - nmap 
-# - nload 
-# - nfs-common 
-# - openssh-server 
-# - portmap 
-# - rsync 
-# - sudo 
-# - virt-what
-# - symlinks
-# - tcpdump 
-# - telnet 
-# - traceroute 
-# - tree 
+  - openssh-server 
   - wget
-# - whois
