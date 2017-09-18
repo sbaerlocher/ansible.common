@@ -76,6 +76,17 @@
     - "update/defaults.yml"
 
 - block:
+  - name: Profile | Copy Profile Scripts
+    template:
+      src: "{{ item }}.j2"
+      dest: "/etc/profile.d/{{item }}.sh"
+      owner: root
+      group: root
+      mode: "0644"
+    with_items:
+      - ps1
+      - alias
+
   - name: root | User Folders (pt. 1)
     file:
       path: /root/{{ item }}
@@ -86,53 +97,10 @@
       - build
       - trash
 
-  - name: root | User Setting (pt. 2)
-    template:
-      src: "{{ item }}.j2"
-      dest: "/root/.{{item }}"
-      owner: root
-      group: root
-      mode: "0644"
-    with_items:
-      - bashrc
-      - screenrc
-      - vimrc
-      - netrc
-
-  - name: root | Copy default scripts (pt. 3)
+  - name: root | Copy default scripts (pt. 2)
     git: 
       repo: "https://{{ github.token }}@github.com/sbaerlocher/scripts.linux.git" 
       dest: /root/scripts 
-      version: linux 
       update: yes
       force: yes
   when: ansible_system == 'Linux'
-
-- block:
-  - name: Users | Create default User (pt. 1)
-    user: 
-      name: "{{ item }}"
-      group: root
-    with_items: "{{ users }}"
-
-  - name: Users | User Setting (pt. 2)
-    template:
-      src: "{{ item.1 }}.j2"
-      dest: "/home/{{ item.0 }}/.{{ item.1 }}"
-      owner: "{{ item.0 }}"
-      group: "root"
-      mode: "0644"
-    with_nested:
-      - "{{ users }}"
-      - [ 'bashrc', 'screenrc', 'vimrc', 'netrc' ]
-
-  - name: Users | Copy default scripts (pt. 3)
-    git: 
-      repo: "https://{{ github.token }}@github.com/sbaerlocher/scripts.git" 
-      dest: /{{ item }}/scripts 
-      version: linux 
-      update: yes
-      force: yes
-    with_items: "{{ users }}"
-  when: ansible_system == 'Linux' and users is defined
-
