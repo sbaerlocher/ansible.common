@@ -4,6 +4,5 @@
 package:
   - git
   - nano 
-  - openssh-server 
   - wget
   - rsync
