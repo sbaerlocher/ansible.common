@@ -6,6 +6,5 @@ package:
   - nano 
   - wget 
   - libselinux-python
-  - MySQL-python
-  - expect
   - yum-utils
+  - rsync

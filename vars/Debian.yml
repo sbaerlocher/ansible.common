@@ -6,3 +6,4 @@ package:
   - nano 
   - openssh-server 
   - wget
+  - rsync

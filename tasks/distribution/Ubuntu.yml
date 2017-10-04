@@ -1,6 +1,10 @@
 ---
 # tasks file for sbaerlocher.common
 
+- name: Ubuntu | Unattended package installation
+  shell: "export DEBIAN_FRONTEND=noninteractive"
+  changed_when: false
+  
 - name: "Update | Install unattended upgrades package"
   apt: name=unattended-upgrades state=present
 

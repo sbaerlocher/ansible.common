@@ -1,6 +1,10 @@
 ---
 # tasks file for sbaerlocher.common
 
+- name: Centos | SELinux Disable
+  selinux: 
+    state: disabled
+
 - name: "Update | Install yum-cron"
   yum: name=yum-cron state=present
 
