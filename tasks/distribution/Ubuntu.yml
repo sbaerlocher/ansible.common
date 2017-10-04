@@ -10,11 +10,13 @@
 
 - name: "Update | Copy unattended-upgrades configuration files in place"
   template:
-    src: "{{ item }}.j2"
-    dest: "/etc/apt/apt.conf.d/{{ item }}"
+    src: "{{ templates }}.j2"
+    dest: "/etc/apt/apt.conf.d/{{ templates }}"
     owner: root
     group: root
     mode: 0644
   with_items:
     - 10periodic
     - 50unattended-upgrades
+  loop_control:
+    loop_var: templates
