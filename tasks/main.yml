@@ -13,10 +13,10 @@
         -  "vars"
 
 - name: Packages | Install default packages
+  become: true
   package:
     name: "{{ item }}" 
     state: present 
-    update_cache: yes
   with_items: 
     - "{{ package }}"
 
@@ -49,16 +49,5 @@
       regexp: (^MAILTO=).*$ 
       replace: \1{{ cron_mailto }}
       backup: yes
-
-  - name: Profile | Copy Profile Scripts
-    template:
-      src: "{{ item }}.j2"
-      dest: "/etc/profile.d/{{item }}.sh"
-      owner: root
-      group: root
-      mode: "0644"
-    with_items:
-      - ps1
-      - alias
 
   when: ansible_system == 'Linux'

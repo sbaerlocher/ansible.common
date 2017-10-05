@@ -2,4 +2,5 @@
 # handlers file for sbaerlocher.common
 
 - name: enable fstrim
+  become: true
   service: name=fstrim.timer state=enable
