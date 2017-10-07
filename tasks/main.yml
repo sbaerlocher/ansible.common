@@ -4,78 +4,63 @@
 - name: add OS specific variables
   include_vars: "{{ item }}"
   with_first_found:
-    - "vars/{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
-    - "vars/{{ ansible_distribution }}.yml"
-    - "vars/{{ ansible_os_family }}.yml"
-    - "vars/defaults.yml"
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+        - "defaults.yml"
+      paths:
+        -  "vars"
+
+- name: Hostname | Include
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+        - "defaults.yml"
+      paths:
+        - "hostname"
 
 - name: Packages | Install default packages
+  become: true
   package:
     name: "{{ item }}" 
     state: present 
-    update_cache: yes
   with_items: 
     - "{{ package }}"
 
-#- name: Hostname | Include
-#  include_tasks: "{{ item }}"
-#  with_first_found:
-#    - "hostname/{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
-#    - "hostname/{{ ansible_distribution }}.yml"
-#    - "hostname/{{ ansible_os_family }}.yml"
-#    - "hostname/defaults.yml"
-
-- name: Centos | SELinux Disable
-  selinux: 
-    state: disabled
-  when: ansible_distribution == 'CentOS'
-
-- name: Ubuntu | Unattended package installation
-  shell: "export DEBIAN_FRONTEND=noninteractive"
-  changed_when: false
-  when: ansible_distribution == 'Ubuntu'
-
-- name: Certificate | Copy default Certificate  (pt. 1)
-  git: 
-    repo: "https://{{ gogs.token }}@gogs.sbaerlo.ch/sbaerlo.ch/certificate.sbaerlo.ch.git" 
-    dest: /etc/ssl/sbaerlo.ch 
-    version: nginx 
-    update: no
-  when: ansible_system == 'Linux'
-
-- name: Certificate | Change premisson  (pt. 2)
-  file: 
-    path: "/etc/ssl/" 
-    owner: root 
-    group: root 
-    mode: "0644"
-  when: ansible_system == 'Linux'
-
-- name: VM Hyper-V | Cusom Conmfig (pt. 1)
-  command: 'sed -i -r "s/(^GRUB_CMDLINE_LINUX=.*quiet)\"/\1 video=hyperv_fb:1024x768\"/g" /etc/default/grub'
-  when: (ansible_system == 'Linux') and (ansible_virtualization_type == 'Hyper-V')
-
-- name: VM Hyper-V | Cusom Conmfig (pt. 1.1)
-  command: "cp -a /boot/grub2/grub.cfg{,.orig} && grub2-mkconfig -o /boot/grub2/grub.cfg"
-  when: (ansible_system == 'Linux') and (ansible_virtualization_type == 'Hyper-V')
-
-- name: Cron | Setting MAILTO
-  replace: 
-    dest: /etc/crontab 
-    regexp: (^MAILTO=).*$ 
-    replace: \1hostmaster@sbaerlo.ch
-    backup: yes
-  when: ansible_system == 'Linux'
-
-- name: Update | Include
+- name: Distribution | Include
   include_tasks: "{{ item }}"
   with_first_found:
-    - "update/{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
-    - "update/{{ ansible_distribution }}.yml"
-    - "update/{{ ansible_os_family }}.yml"
-    - "update/defaults.yml"
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+        - "defaults.yml"
+      paths:
+        - "distribution"
+
+- name: Virtualization | Include
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_virtualization_type }}.yml"
+        - "defaults.yml"
+      paths:
+        - "virtualization"
+  when: ansible_system == 'Linux'
 
 - block:
+
+  - name: Cron | Setting MAILTO
+    replace: 
+      dest: /etc/crontab 
+      regexp: (^MAILTO=).*$ 
+      replace: \1{{ cron_mailto }}
+      backup: yes
+
   - name: Profile | Copy Profile Scripts
     template:
       src: "{{ item }}.j2"
@@ -87,20 +72,4 @@
       - ps1
       - alias
 
-  - name: root | User Folders (pt. 1)
-    file:
-      path: /root/{{ item }}
-      state: directory
-    with_items:
-      - scripts
-      - dist
-      - build
-      - trash
-
-  - name: root | Copy default scripts (pt. 2)
-    git: 
-      repo: "https://{{ github.token }}@github.com/sbaerlocher/scripts.linux.git" 
-      dest: /root/scripts 
-      update: yes
-      force: yes
   when: ansible_system == 'Linux'
