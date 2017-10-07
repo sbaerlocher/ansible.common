@@ -11,6 +11,9 @@
         - "defaults.yml"
       paths:
         -  "vars"
+  tags:
+    - configuration
+    - packages
 
 - name: Hostname | Include
   include_tasks: "{{ item }}"
@@ -22,6 +25,9 @@
         - "defaults.yml"
       paths:
         - "hostname"
+  tags:
+    - configuration
+    - packages
 
 - name: Packages | Install default packages
   become: true
@@ -30,6 +36,8 @@
     state: present 
   with_items: 
     - "{{ package }}"
+  tags:
+    - packages
 
 - name: Distribution | Include
   include_tasks: "{{ item }}"
@@ -41,6 +49,9 @@
         - "defaults.yml"
       paths:
         - "distribution"
+  tags:
+    - configuration
+    - packages
 
 - name: Virtualization | Include
   include_tasks: "{{ item }}"
@@ -51,6 +62,9 @@
       paths:
         - "virtualization"
   when: ansible_system == 'Linux'
+  tags:
+    - configuration
+    - packages
 
 - block:
 
@@ -60,6 +74,8 @@
       regexp: (^MAILTO=).*$ 
       replace: \1{{ cron_mailto }}
       backup: yes
+    tags:
+      - configuration
 
   - name: Profile | Copy Profile Scripts
     template:
@@ -71,5 +87,7 @@
     with_items:
       - ps1
       - alias
-
+    tags:
+      - configuration
+  
   when: ansible_system == 'Linux'

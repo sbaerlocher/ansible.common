@@ -5,10 +5,14 @@
   become: true
   shell: "export DEBIAN_FRONTEND=noninteractive"
   changed_when: false
+  tags:
+    - configuration
   
 - name: "Update | Install unattended upgrades package"
   become: true
   apt: name=unattended-upgrades state=present
+  tags:
+    - packages
 
 - name: "Update | Copy unattended-upgrades configuration files in place"
   become: true
@@ -23,3 +27,5 @@
     - 50unattended-upgrades
   loop_control:
     loop_var: templates
+  tags:
+    - configuration

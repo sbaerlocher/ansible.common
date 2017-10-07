@@ -13,3 +13,5 @@
     - Reboot server
     - Pause for 180 seconds
     - Wait for reboot	
+  tags:
+    - configuration

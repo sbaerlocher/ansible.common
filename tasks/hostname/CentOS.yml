@@ -8,6 +8,8 @@
     - Reboot server
     - Pause for 180 seconds
     - Wait for reboot	
+  tags:
+    - configuration
 
 - name: "Hostname | Update the hostname RedHat, CentOS (pt. 2) - (/etc/sysconfig/network)"
   lineinfile:
@@ -18,6 +20,8 @@
     - Reboot server
     - Pause for 180 seconds
     - Wait for reboot	
+  tags:
+    - configuration
 
 - name: "Hostname | Update the IPv4 hostname (pt. 3) - (/etc/hosts)"
   lineinfile:
@@ -29,6 +33,8 @@
     - Reboot server
     - Pause for 180 seconds
     - Wait for reboot	
+  tags:
+    - configuration
 
 - name: "Hostname | Update the IPv6 hostname (pt. 3) - (/etc/hosts)"
   lineinfile:
@@ -40,3 +46,5 @@
     - Reboot server
     - Pause for 180 seconds
     - Wait for reboot	
+  tags:
+    - configuration
