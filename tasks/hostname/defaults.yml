@@ -9,4 +9,7 @@
     group: root
     mode: 0644
   when: ansible_system in  [ "Linux" ]
-  register: hostname_change
+  notify:
+    - Reboot server
+    - Pause for 180 seconds
+    - Wait for reboot	
