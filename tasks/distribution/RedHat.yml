@@ -3,8 +3,10 @@
 
 - name: Centos | SELinux Disable
   become: true
-  selinux: 
-    state: disabled
+  lineinfile:
+    dest: /etc/selinux/config
+    line: "SELINUX=disabled"
+    regexp: "SELINUX="
   notify:
     - Reboot server
     - Pause for 180 seconds
