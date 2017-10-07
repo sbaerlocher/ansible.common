@@ -1,0 +1,7 @@
+---
+# tasks file for sbaerlocher.common
+
+- name: "Hostname | Update the hostname Windows (pt. 2)"
+  script: files/set_domain.ps1 --NewName "{{ inventory_hostname_short }}" --NewFQDN "{{ ansible_domain }}"
+  when: ansible_os_family == 'Windows'
+  notify: network restart
