@@ -4,6 +4,10 @@
 - name: Centos | SELinux Disable
   selinux: 
     state: disabled
+  notify:
+    - Reboot server
+    - Pause for 180 seconds
+    - Wait for reboot	
 
 - name: "Update | Install yum-cron"
   yum: name=yum-cron state=present
