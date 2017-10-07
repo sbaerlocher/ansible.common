@@ -29,6 +29,11 @@ None
 
 ## Changelog
 
+### 1.1
+
+* Reboot by selinux change
+* add hostname rename
+
 ### 1.0
 
 * Initial release
