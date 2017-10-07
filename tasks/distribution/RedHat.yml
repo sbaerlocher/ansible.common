@@ -2,6 +2,7 @@
 # tasks file for sbaerlocher.common
 
 - name: Centos | SELinux Disable
+  become: true
   selinux: 
     state: disabled
   notify:
@@ -10,12 +11,15 @@
     - Wait for reboot	
 
 - name: "Update | Install yum-cron"
+  become: true
   yum: name=yum-cron state=present
 
 - name: "Update | Ensure yum-cron is running and enabled on boot"
+  become: true
   service: name=yum-cron state=started enabled=yes
 
 - name: "Update | Configure autoupdates (RHEL 7)"
+  become: true
   lineinfile:
     dest: "/etc/yum/yum-cron.conf"
     regexp: '^apply_updates = .+'
@@ -23,6 +27,7 @@
   when: ansible_distribution_major_version | int == 7
 
 - name: "Update | Kernel limit"
+  become: true
   lineinfile:
     dest: "/etc/yum.conf"
     regexp: '^installonly_limit'
