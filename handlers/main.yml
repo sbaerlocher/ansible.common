@@ -6,7 +6,7 @@
   service: name=fstrim.timer state=enable
 
 - name: Reboot server		
-  shell: sleep 2 && shutdown -r now 'Reboot required' removes=/var/run/reboot-required	
+  shell: sleep 2 && init 6
   async: 1		
   poll: 0		
   ignore_errors: true
