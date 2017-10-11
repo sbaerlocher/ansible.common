@@ -76,18 +76,5 @@
       backup: yes
     tags:
       - configuration
-
-  - name: Profile | Copy Profile Scripts
-    template:
-      src: "{{ item }}.j2"
-      dest: "/etc/profile.d/{{item }}.sh"
-      owner: root
-      group: root
-      mode: "0644"
-    with_items:
-      - ps1
-      - alias
-    tags:
-      - configuration
   
   when: ansible_system == 'Linux'

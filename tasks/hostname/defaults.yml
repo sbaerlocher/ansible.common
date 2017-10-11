@@ -2,6 +2,7 @@
 # tasks file for sbaerlocher.common
 
 - name: "Hostname | Update the hostname Debian Ubuntu (pt. 2) - (/etc/hostname)"
+  become: true
   copy:
     content: "{{inventory_hostname_short}}{{'\n'}}"
     dest: /etc/hostname
