@@ -3,20 +3,28 @@
 
 - name: Centos | SELinux Disable
   become: true
-  selinux: 
-    state: disabled
+  lineinfile:
+    dest: /etc/selinux/config
+    line: "SELINUX=disabled"
+    regexp: "SELINUX="
   notify:
     - Reboot server
     - Pause for 180 seconds
     - Wait for reboot	
+  tags:
+    - configuration
 
 - name: "Update | Install yum-cron"
   become: true
   yum: name=yum-cron state=present
+  tags:
+    - packages
 
 - name: "Update | Ensure yum-cron is running and enabled on boot"
   become: true
   service: name=yum-cron state=started enabled=yes
+  tags:
+    - configuration
 
 - name: "Update | Configure autoupdates (RHEL 7)"
   become: true
@@ -25,6 +33,8 @@
     regexp: '^apply_updates = .+'
     line: 'apply_updates = yes'
   when: ansible_distribution_major_version | int == 7
+  tags:
+    - configuration
 
 - name: "Update | Kernel limit"
   become: true
@@ -32,3 +42,5 @@
     dest: "/etc/yum.conf"
     regexp: '^installonly_limit'
     line: 'installonly_limit=2'
+  tags:
+    - configuration

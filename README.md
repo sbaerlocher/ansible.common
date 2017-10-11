@@ -29,6 +29,12 @@ None
 
 ## Changelog
 
+### 1.2
+
+* fix problem with selinux and reboot
+* add tags support
+* add become support
+
 ### 1.1
 
 * Reboot by selinux change
