@@ -68,13 +68,20 @@
 
 - block:
 
+  - name: Update password
+    become: yes
+    user:
+      name: "{{ ansible_ssh_user | default(root) }}"
+      password: "{{ ansible_ssh_pass | default(lookup('password')) }}"
+
   - name: Cron | Setting MAILTO
+    become: yes
     replace: 
       dest: /etc/crontab 
       regexp: (^MAILTO=).*$ 
       replace: \1{{ cron_mailto }}
       backup: yes
-    tags:
-      - configuration
   
   when: ansible_system == 'Linux'
+  tags:
+    - configuration
