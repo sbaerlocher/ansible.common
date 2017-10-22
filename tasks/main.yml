@@ -27,7 +27,6 @@
         - "hostname"
   tags:
     - configuration
-    - packages
 
 - name: Packages | Install default packages
   become: true
@@ -51,7 +50,6 @@
         - "distribution"
   tags:
     - configuration
-    - packages
 
 - name: Virtualization | Include
   include_tasks: "{{ item }}"
@@ -64,24 +62,14 @@
   when: ansible_system == 'Linux'
   tags:
     - configuration
-    - packages
 
-- block:
-
-  - name: Update password
-    become: yes
-    user:
-      name: "{{ ansible_ssh_user | default(root) }}"
-      password: "{{ ansible_ssh_pass | default(lookup('password')) }}"
-
-  - name: Cron | Setting MAILTO
-    become: yes
-    replace: 
-      dest: /etc/crontab 
-      regexp: (^MAILTO=).*$ 
-      replace: \1{{ cron_mailto }}
-      backup: yes
-  
-  when: ansible_system == 'Linux'
+- name: System | Include
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_system }}.yml"
+        - "defaults.yml"
+      paths:
+        - "system"
   tags:
     - configuration
