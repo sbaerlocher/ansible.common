@@ -1,0 +1,15 @@
+---
+# tasks file for sbaerlocher.common
+
+- name: Time | Set timezone
+  win_timezone:
+    timezone: "{{ global_win_time_zone }}"
+
+- name: Time | Enable windows time
+  win_service:
+    name: w32time
+    start_mode: auto
+    state: started
+
+- name: Time | Configure windows time
+  win_shell: "w32tm /config /update /manualpeerlist:{{ global_win_ntp_server }} /syncfromflags:MANUAL"

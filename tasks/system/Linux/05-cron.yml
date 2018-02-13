@@ -1,0 +1,10 @@
+---
+# tasks file for sbaerlocher.common
+
+- name: Cron | Setting MAILTO
+  become: true
+  replace:
+    dest: /etc/crontab
+    regexp: (^MAILTO=).*$
+    replace: \1{{ cron_mailto | default('root') }}
+    backup: true

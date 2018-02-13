@@ -11,8 +11,9 @@
   poll: 0
   ignore_errors: true
 
-- name: Pause for 180 seconds
-  pause: minutes=3
+- name: Pause for 60 seconds
+  pause:
+    seconds: 60
 
 - name: Wait for reboot
   local_action: wait_for host={{ inventory_hostname }}
