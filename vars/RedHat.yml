@@ -1,10 +1,10 @@
 ---
 # tasks file for sbaerlocher.vars
 
-package: 
+package:
   - git
-  - nano 
-  - wget 
+  - nano
+  - wget
   - libselinux-python
   - yum-utils
   - rsync

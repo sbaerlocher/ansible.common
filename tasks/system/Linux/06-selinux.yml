@@ -1,0 +1,16 @@
+---
+# tasks file for sbaerlocher.common
+
+- name: SELinux | SELinux Disable
+  become: true
+  lineinfile:
+    dest: /etc/selinux/config
+    line: "SELINUX=disabled"
+    regexp: "SELINUX="
+  when: ansible_os_family == 'RedHat'
+  notify:
+    - Reboot server
+    - Pause for 60 seconds
+    - Wait for reboot
+  tags:
+    - configuration

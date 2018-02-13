@@ -1,6 +1,10 @@
 ---
 # defaults file for sbaerlocher.common
 
-users: []
-
 netrcs: []
+
+global_win_time_zone: "W. Europe Standard Time"
+
+global_win_ntp_server: "time.windows.com"
+
+bash_PS1: 'PS1=" \T \u@\H \w \\$ \[$(tput sgr0)\]"'

@@ -1,0 +1,18 @@
+---
+# tasks file for sbaerlocher.common
+
+- name: bash | Create bash ps1
+  become: true
+  copy:
+    content: |
+      #!/bin/sh
+      export PROMPT_COMMAND='export {{ bash_PS1 }}'
+    dest: "/etc/profile.d/99-bash.sh"
+    mode: 0755
+
+- name: bash | Create .bashrc for root
+  become: true
+  template:
+    src: "bashrc.j2"
+    dest: "/root/.bashrc"
+    owner: root

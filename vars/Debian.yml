@@ -3,6 +3,7 @@
 
 package:
   - git
-  - nano 
+  - nano
   - wget
   - rsync
+  - python-apt

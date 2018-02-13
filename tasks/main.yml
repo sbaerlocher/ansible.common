@@ -10,71 +10,17 @@
         - "{{ ansible_os_family }}.yml"
         - "defaults.yml"
       paths:
-        -  "vars"
+        - "vars"
   tags:
     - configuration
     - packages
 
-- name: Hostname | Include
-  include_tasks: "{{ item }}"
-  with_first_found:
-    - files:
-        - "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
-        - "{{ ansible_distribution }}.yml"
-        - "{{ ansible_os_family }}.yml"
-        - "defaults.yml"
-      paths:
-        - "hostname"
+- name: include system tasks
+  include_tasks: "{{ loop_system }}"
+  with_fileglob:
+    - "system/{{ ansible_system }}/*"
+  loop_control:
+    loop_var: loop_system
   tags:
     - configuration
     - packages
-
-- name: Packages | Install default packages
-  become: true
-  package:
-    name: "{{ item }}" 
-    state: present 
-  with_items: 
-    - "{{ package }}"
-  tags:
-    - packages
-
-- name: Distribution | Include
-  include_tasks: "{{ item }}"
-  with_first_found:
-    - files:
-        - "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
-        - "{{ ansible_distribution }}.yml"
-        - "{{ ansible_os_family }}.yml"
-        - "defaults.yml"
-      paths:
-        - "distribution"
-  tags:
-    - configuration
-    - packages
-
-- name: Virtualization | Include
-  include_tasks: "{{ item }}"
-  with_first_found:
-    - files:
-        - "{{ ansible_virtualization_type }}.yml"
-        - "defaults.yml"
-      paths:
-        - "virtualization"
-  when: ansible_system == 'Linux'
-  tags:
-    - configuration
-    - packages
-
-- block:
-
-  - name: Cron | Setting MAILTO
-    replace: 
-      dest: /etc/crontab 
-      regexp: (^MAILTO=).*$ 
-      replace: \1{{ cron_mailto }}
-      backup: yes
-    tags:
-      - configuration
-  
-  when: ansible_system == 'Linux'

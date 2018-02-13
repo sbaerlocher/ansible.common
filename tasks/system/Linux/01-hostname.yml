@@ -1,0 +1,70 @@
+---
+# tasks file for sbaerlocher.common
+
+- name: "Hostname | Update the hostname (pt. 1) - hostname cmd"
+  become: true
+  hostname:
+    name: "{{ inventory_hostname }}"
+  notify:
+    - Reboot server
+    - Pause for 60 seconds
+    - Wait for reboot
+  tags:
+    - configuration
+
+- name: "Hostname | Update the hostname RedHat, CentOS (pt. 2) - (/etc/sysconfig/network)"
+  become: true
+  lineinfile:
+    dest: /etc/sysconfig/network
+    line: "HOSTNAME={{ inventory_hostname }}"
+    regexp: "HOSTNAME="
+  when: ansible_os_family == 'RedHat'
+  notify:
+    - Reboot server
+    - Pause for 60 seconds
+    - Wait for reboot
+  tags:
+    - configuration
+
+- name: "Hostname | Update the hostname (pt. 2) - (/etc/hostname)"
+  become: true
+  copy:
+    content: "{{ inventory_hostname }}{{'\n'}}"
+    dest: /etc/hostname
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Reboot server
+    - Pause for 60 seconds
+    - Wait for reboot
+  tags:
+    - configuration
+
+- name: "Hostname | Update the IPv4 hostname (pt. 3) - (/etc/hosts)"
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "^127.0.0.1"
+    line: "127.0.0.1{{'\t'}}{{inventory_hostname}}{% if inventory_hostname != inventory_hostname_short %}{{'\t'}}{{inventory_hostname_short}}{% endif %}{{'\t'}}localhost"
+    state: present
+  notify:
+    - Reboot server
+    - Pause for 60 seconds
+    - Wait for reboot
+  tags:
+    - configuration
+
+- name: "Hostname | Update the IPv6 hostname (pt. 3) - (/etc/hosts)"
+  become: true
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "^::1"
+    line: "::1{{'\t\t'}}{{inventory_hostname}}{% if inventory_hostname != inventory_hostname_short %}{{'\t'}}{{inventory_hostname_short}}{% endif %}{{'\t'}}localhost ip6-localhost ip6-loopback"
+    state: present
+  notify:
+    - Reboot server
+    - Pause for 60 seconds
+    - Wait for reboot
+  tags:
+    - configuration

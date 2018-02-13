@@ -1,0 +1,8 @@
+---
+# tasks file for sbaerlocher.common
+
+- name: Users | Update password
+  become: true
+  user:
+    name: "{{ ansible_ssh_user | default(root) }}"
+    password: "{{ ansible_ssh_pass | default(lookup('password')) }}"

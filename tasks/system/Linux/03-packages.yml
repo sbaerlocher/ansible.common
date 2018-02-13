@@ -1,0 +1,12 @@
+---
+# tasks file for sbaerlocher.common
+
+- name: Packages | Install default packages
+  become: true
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ package }}"
+  tags:
+    - packages
