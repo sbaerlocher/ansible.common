@@ -6,19 +6,15 @@
   service: name=fstrim.timer state=enable
 
 - name: Reboot server
-  shell: sleep 2 && init 6
+  shell: shutdown -r now
   async: 1
   poll: 0
   ignore_errors: true
 
-- name: Pause for 60 seconds
+- name: Pause for 10 seconds
   pause:
-    seconds: 60
+    seconds: 10
 
 - name: Wait for reboot
-  local_action: wait_for host={{ inventory_hostname }}
-                port=22
-                delay=15
-                timeout=300
-                state=started
-                connect_timeout=15
+  wait_for_connection:
+        timeout: 300

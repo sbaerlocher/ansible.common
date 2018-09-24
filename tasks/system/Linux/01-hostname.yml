@@ -7,7 +7,7 @@
     name: "{{ inventory_hostname }}"
   notify:
     - Reboot server
-    - Pause for 60 seconds
+    - Pause for 10 seconds
     - Wait for reboot
   tags:
     - configuration
@@ -21,7 +21,7 @@
   when: ansible_os_family == 'RedHat'
   notify:
     - Reboot server
-    - Pause for 60 seconds
+    - Pause for 10 seconds
     - Wait for reboot
   tags:
     - configuration
@@ -36,7 +36,7 @@
     mode: 0644
   notify:
     - Reboot server
-    - Pause for 60 seconds
+    - Pause for 10 seconds
     - Wait for reboot
   tags:
     - configuration
@@ -50,7 +50,7 @@
     state: present
   notify:
     - Reboot server
-    - Pause for 60 seconds
+    - Pause for 10 seconds
     - Wait for reboot
   tags:
     - configuration
@@ -64,7 +64,7 @@
     state: present
   notify:
     - Reboot server
-    - Pause for 60 seconds
+    - Pause for 10 seconds
     - Wait for reboot
   tags:
     - configuration
